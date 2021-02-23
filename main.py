@@ -19,13 +19,13 @@ for pref in pref_list:
     df = csv_input[(csv_input["prefectureNameE"].isin([pref]))]
     df.insert(0, "datetime", df["year"].astype(str) + "-" + df["month"].astype(str) + "-" + df["date"].astype(str))
     df.index = pd.to_datetime(df["datetime"])
-    df["testedPositive_diff"] = df["testedPositive"].diff(1).fillna(0)
+    df["testedPositive_diff"] = df["testedPositive"].diff(1).interpolate()
     df = df.copy()
     df.drop(columns=["prefectureNameJ", "prefectureNameE", "year", "month", "date", "datetime"], inplace=True)
     print(df.dtypes)
     print(df)
 
-    df.to_csv(f"./output/{pref}.csv", index=False)
+    df.to_csv(f"./output/{pref}.csv")
 
     plt.figure()
     df["testedPositive_diff"].plot()
