@@ -49,9 +49,9 @@ def main(days=30):
 
         tokyo = pytz.timezone("Asia/Tokyo")
         tokyo_datetime_now = tokyo.localize(datetime.datetime.now())
-        tokyo_datetime_past = datetime.timedelta(days=days)
+        tokyo_datetime_past = tokyo_datetime_now - datetime.timedelta(days=days)
         tokyo_datetime_now_str = tokyo_datetime_now.strftime("%Y-%m-%d")
-        tokyo_datetime_past_str = (tokyo_datetime_now - tokyo_datetime_past).strftime("%Y-%m-%d")
+        tokyo_datetime_past_str = tokyo_datetime_past.strftime("%Y-%m-%d")
         df = df[(tokyo_datetime_past_str <= df.index) & (df.index <= tokyo_datetime_now_str)]
 
         # plot

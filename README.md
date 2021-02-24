@@ -7,3 +7,7 @@
 
 東洋経済 - 新型コロナウイルス国内感染の状況
 https://toyokeizai.net/sp/visual/tko/covid19
+
+## License
+
+MIT
