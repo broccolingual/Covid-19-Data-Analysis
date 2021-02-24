@@ -1,7 +1,7 @@
 # Covid-19 Data Analysis
 
 日本国内の都道府県ごとのデータをグラフとして可視化
-<br>output/配下のグラフは検査陽性者数のもの
+<br>output/配下のグラフは検査陽性者数と実効再生産数
 
 ## Data Source
 

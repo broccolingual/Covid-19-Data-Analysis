@@ -26,8 +26,10 @@ def main(days=30):
         df = csv_input[(csv_input["prefectureNameE"].isin([pref]))]
         df.insert(0, "datetime", df["year"].astype(str) + "-" + df["month"].astype(str) + "-" + df["date"].astype(str))
         df.index = pd.to_datetime(df["datetime"])
-        df["testedPositive_diff"] = df["testedPositive"].diff(1).dropna()
         df = df.copy()
+        df["Tested Positive Diff"] = df["testedPositive"].diff(1).dropna()
+        df["Tested Positive Diff(SMA5)"] = df["Tested Positive Diff"].rolling(5).mean()
+        df["Tested Positive Diff(SMA10)"] = df["Tested Positive Diff"].rolling(10).mean()
         df.drop(columns=["prefectureNameJ", "prefectureNameE", "year", "month", "date", "datetime"], inplace=True)
         # print(df.dtypes)
         print(df)
@@ -44,13 +46,8 @@ def main(days=30):
         # plot
         fig = plt.figure()
         ax = fig.add_subplot(111)
-        ax = df.plot(y=["testedPositive_diff"], label=["TestedPositive"], style=["-", "-"], figsize=(10, 4))
-        ax = df.plot(secondary_y=["effectiveReproductionNumber"], label=["Effective Reproduction Number"], style=["-", "-"], figsize=(10, 4))
-        
-        # view settings
-        desc = df.describe()
-        # ax.set_ylim(math.floor(desc["testedPositive_diff"]["min"]) - 1, math.ceil(desc["testedPositive_diff"]["max"]) + 1)
-        # ax.right_ax.set_ylim(math.floor(desc["effectiveReproductionNumber"]["min"]) - 1, math.ceil(desc["effectiveReproductionNumber"]["max"]) + 1)
+        ax = df.plot(y=["Tested Positive Diff", "Tested Positive Diff(SMA5)", "Tested Positive Diff(SMA10)"], label=["TestedPositive", "Tested Positive Diff(SMA5)", "Tested Positive Diff(SMA10)"], figsize=(10, 4))
+        ax = df.plot(secondary_y=["effectiveReproductionNumber"], label=["Effective Reproduction Number"], figsize=(10, 4), color=["#00ff00", "#dc143c", "#ffa500", "#ff7f50"], style=["-", "-", "--", "--"])
 
         # grid settings
         ax.grid(True, linestyle=':')
