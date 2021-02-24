@@ -1,8 +1,10 @@
 import csv
+import math
 
 import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+import numpy as np
 
 CSV_PATH = "./prefectures.csv"
 pref_list = set()
@@ -27,8 +29,26 @@ for pref in pref_list:
 
     df.to_csv(f"./output/{pref}.csv")
 
+    del df["testedPositive"], df["peopleTested"], df["hospitalized"], df["discharged"], df["deaths"]
+
+    df = df[("2021/1/24" <= df.index) & (df.index <= "2021/2/24")]
+
     plt.figure()
-    df.plot(y=["testedPositive_diff",], figsize=(12,4), alpha=0.8)
+    ax = df.plot(secondary_y=["effectiveReproductionNumber",], style=["-", "-"], grid=False, mark_right=False, figsize=(12, 4))
+    
+    # view settings
+    desc = df.describe()
+    ax.set_ylim(math.floor(desc["testedPositive_diff"]["min"]) - 1, math.ceil(desc["testedPositive_diff"]["max"]) + 1)
+    # ax.right_ax.set_ylim(math.floor(desc["effectiveReproductionNumber"]["min"]) - 1, math.ceil(desc["effectiveReproductionNumber"]["max"]) + 1)
+
+    # grid settings
+    ax.grid(True, linestyle=':')
+
+    # label settings
     plt.title(pref)
+    ax.set_ylabel("Tested Positive")
+    ax.right_ax.set_ylabel("Effective Reproduction Number")
+    ax.set_xlabel("Date")
+
     plt.savefig(f"./output/{pref}.png")
     plt.close("all")
