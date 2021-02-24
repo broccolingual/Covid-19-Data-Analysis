@@ -41,7 +41,9 @@ def main(days=30):
         tokyo = pytz.timezone("Asia/Tokyo")
         tokyo_datetime_now = tokyo.localize(datetime.datetime.now())
         tokyo_datetime_past = datetime.timedelta(days=days)
-        df = df[((tokyo_datetime_now - tokyo_datetime_past).strftime("%Y-%m-%d") <= df.index) & (df.index <= tokyo_datetime_now.strftime("%Y-%m-%d"))]
+        tokyo_datetime_now_str = tokyo_datetime_now.strftime("%Y-%m-%d")
+        tokyo_datetime_past_str = (tokyo_datetime_now - tokyo_datetime_past).strftime("%Y-%m-%d")
+        df = df[(tokyo_datetime_past_str <= df.index) & (df.index <= tokyo_datetime_now_str)]
 
         # plot
         fig = plt.figure()
@@ -53,13 +55,13 @@ def main(days=30):
         ax.grid(True, linestyle=':')
 
         # label settings
-        plt.title(pref)
+        plt.title(f"{pref} ({tokyo_datetime_past_str}~{tokyo_datetime_now_str})")
         ax.set_ylabel("Tested Positive")
         ax.right_ax.set_ylabel("Effective Reproduction Number", rotation=-90)
         ax.set_xlabel("Date")
         ax.right_ax.yaxis.set_label_coords(1.06, 0.5)
 
-        plt.tight_layout() 
+        plt.tight_layout()
         plt.savefig(f"./output/{pref}.png")
         plt.close("all")
 
