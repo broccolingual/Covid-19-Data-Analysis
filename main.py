@@ -3,6 +3,7 @@ import datetime
 import math
 import sys
 import time
+import urllib.request
 
 import pandas as pd
 import pytz
@@ -10,13 +11,19 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 
-CSV_PATH = "./prefectures.csv"
-pref_list = set()
+def download_csv(url, file_path):
+    urllib.request.urlretrieve(url, file_path)
 
+CSV_PATH = "./prefectures.csv"
+try:
+    download_csv("https://toyokeizai.net/sp/visual/tko/covid19/csv/prefectures.csv", CSV_PATH)
+except Exception as e:
+    print(e)
 csv_input = pd.read_csv(filepath_or_buffer=CSV_PATH, encoding="utf-8", sep=",")
 
 def main(days=30):
     # make sorted prefecture list
+    pref_list = set()
     pref_list = {d[4] for d in csv_input.values}
     pref_list = sorted(pref_list)
     print(len(pref_list))
@@ -31,10 +38,12 @@ def main(days=30):
         df["Tested Positive Diff(SMA5)"] = df["Tested Positive Diff"].rolling(5).mean()
         df["Tested Positive Diff(SMA10)"] = df["Tested Positive Diff"].rolling(10).mean()
         df.drop(columns=["prefectureNameJ", "prefectureNameE", "year", "month", "date", "datetime"], inplace=True)
+
         # print(df.dtypes)
-        print(df)
+        # print(df)
 
         df.to_csv(f"./output/{pref}.csv")
+        print(f"Output File: ./output/{pref}.csv")
 
         del df["testedPositive"], df["peopleTested"], df["hospitalized"], df["discharged"], df["deaths"]
 
@@ -63,6 +72,7 @@ def main(days=30):
 
         plt.tight_layout()
         plt.savefig(f"./output/{pref}.png")
+        print(f"Output File: ./output/{pref}.png")
         plt.close("all")
 
 if __name__ == "__main__":
