@@ -77,7 +77,7 @@ def main(days=90):
 
 if __name__ == "__main__":
     # period settings
-    days = 30
+    days = 90
     if len(sys.argv) == 2:
         days = int(sys.argv[1])
 
