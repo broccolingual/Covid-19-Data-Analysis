@@ -21,7 +21,7 @@ except Exception as e:
     print(e)
 csv_input = pd.read_csv(filepath_or_buffer=CSV_PATH, encoding="utf-8", sep=",")
 
-def main(days=30):
+def main(days=90):
     # make sorted prefecture list
     pref_list = set()
     pref_list = {d[4] for d in csv_input.values}
